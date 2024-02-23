@@ -2,9 +2,14 @@ package main
 
 import (
 	"context"
+	"net/http"
 	"os"
 	"os/signal"
 
+	"github.com/gorilla/mux"
+
+	"async-arch/boilerplate/internal/api"
+	"async-arch/boilerplate/internal/api/handler/index"
 	"async-arch/boilerplate/internal/infrastructure/contract"
 	"async-arch/boilerplate/internal/infrastructure/di"
 )
@@ -44,9 +49,25 @@ func main() {
 }
 
 func run(ctx context.Context, log contract.Log) (err error) {
+	// Dependencies
+
+	config, err := di.NewConfig()
+	if err != nil {
+		return err
+	}
+
+	apiServer := di.NewAPIServer(&config.APIServer)
+
 	// Database
 
 	// Repositories
 
-	return nil
+	// API
+	r := mux.NewRouter()
+	apiWrapper := api.NewWrapper(log)
+
+	r.Handle(apiWrapper.Handle(index.New())).Methods(http.MethodGet)
+
+	// Run API Server
+	return apiServer.Run(r)
 }
