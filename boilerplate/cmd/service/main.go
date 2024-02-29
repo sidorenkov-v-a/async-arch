@@ -53,9 +53,16 @@ func run(ctx context.Context, log contract.Log) (err error) {
 		return err
 	}
 
-	apiServer := di.NewAPIServer(&config.APIServer)
+	env, err := di.NewEnv()
+	if err != nil {
+		return err
+	}
 
 	// Database
+	_, err = di.NewDB(env.DB)
+	if err != nil {
+		return err
+	}
 
 	// Repositories
 
@@ -63,5 +70,7 @@ func run(ctx context.Context, log contract.Log) (err error) {
 	r := mux.NewRouter()
 
 	// Run API Server
+	apiServer := di.NewAPIServer(&config.APIServer)
+
 	return apiServer.Run(r)
 }
