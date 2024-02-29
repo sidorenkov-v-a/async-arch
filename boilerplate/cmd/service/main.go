@@ -67,6 +67,9 @@ func run(ctx context.Context, log contract.Log) (err error) {
 	// Repositories
 
 	// API
+
+	//TODO:
+	//https://github.com/deepmap/oapi-codegen/tree/master/examples/petstore-expanded/gorilla
 	r := mux.NewRouter()
 
 	// Run API Server
