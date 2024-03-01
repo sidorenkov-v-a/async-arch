@@ -1,6 +1,8 @@
 package di
 
 import (
+	"fmt"
+
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 
@@ -8,7 +10,14 @@ import (
 )
 
 func NewDB(env env.Database) (*sqlx.DB, error) {
-	db, err := sqlx.Connect("postgres", env.DBUrl)
+	dbUrl := fmt.Sprintf(
+		"postgresql://localhost:%d/postgres?user=%s&password=%s&sslmode=disable",
+		env.DBPort,
+		env.DBUser,
+		env.DBPassword,
+	)
+
+	db, err := sqlx.Connect("postgres", dbUrl)
 	if err != nil {
 		return nil, err
 	}
