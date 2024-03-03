@@ -11,7 +11,12 @@ type Databus struct {
 	Port int    `env:"DATABUS_PORT"`
 }
 
+type Server struct {
+	BindAddr string `env:"SERVER_BIND_ADDR"`
+}
+
 type Config struct {
 	DB      Database
 	Databus Databus
+	Server  Server
 }
