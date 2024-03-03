@@ -47,12 +47,6 @@ func main() {
 
 func run(ctx context.Context, log contract.Log) (err error) {
 	// Dependencies
-
-	config, err := di.NewConfig()
-	if err != nil {
-		return err
-	}
-
 	env, err := di.NewEnv()
 	if err != nil {
 		return err
@@ -73,7 +67,7 @@ func run(ctx context.Context, log contract.Log) (err error) {
 	r := mux.NewRouter()
 
 	// Run API Server
-	apiServer := di.NewAPIServer(&config.APIServer)
+	apiServer := di.NewAPIServer(&env.Server)
 
 	return apiServer.Run(r)
 }
