@@ -6,6 +6,12 @@ type Database struct {
 	DBPassword string `env:"POSTGRES_PASSWORD"`
 }
 
+type Databus struct {
+	Host string `env:"DATABUS_HOST"`
+	Port int    `env:"DATABUS_PORT"`
+}
+
 type Config struct {
-	DB Database
+	DB      Database
+	Databus Databus
 }
