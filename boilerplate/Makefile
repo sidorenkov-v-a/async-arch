@@ -11,3 +11,6 @@ migrate.up:
 
 migrate.down:
 	migrate -database $(DB_URL) -path db/migrations down
+
+migrate.create:
+	migrate create -ext sql -dir db/migrations -seq $(name)
