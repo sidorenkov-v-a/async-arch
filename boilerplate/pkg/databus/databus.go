@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"async-arch/boilerplate/internal/infrastructure/contract"
-	"async-arch/boilerplate/internal/infrastructure/di/env"
+	"async-arch/boilerplate/pkg/env"
 )
 
 type Databus struct {

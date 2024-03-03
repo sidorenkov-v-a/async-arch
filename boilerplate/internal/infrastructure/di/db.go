@@ -6,7 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 
-	"async-arch/boilerplate/internal/infrastructure/di/env"
+	"async-arch/boilerplate/pkg/env"
 )
 
 func NewDB(env env.Database) (*sqlx.DB, error) {

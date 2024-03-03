@@ -13,8 +13,8 @@ import (
 
 	"async-arch/boilerplate/internal/infrastructure/contract"
 	"async-arch/boilerplate/internal/infrastructure/di"
-	databus2 "async-arch/boilerplate/internal/infrastructure/di/databus"
-	"async-arch/boilerplate/internal/infrastructure/di/env"
+	databus3 "async-arch/boilerplate/pkg/databus"
+	"async-arch/boilerplate/pkg/env"
 )
 
 const (
@@ -99,7 +99,7 @@ func databusExample(ctx context.Context, env *env.Config, log contract.Log) erro
 	producer1 := di.NewProducer(databus, "topic_test_1")
 	producer2 := di.NewProducer(databus, "topic_test_2")
 
-	var handler1 databus2.ConsumerHandler = func(ctx context.Context, message kafka.Message) error {
+	var handler1 databus3.ConsumerHandler = func(ctx context.Context, message kafka.Message) error {
 		fmt.Println("-------------------------")
 		fmt.Println("Handler 1 receive message")
 		fmt.Println(message)
@@ -107,7 +107,7 @@ func databusExample(ctx context.Context, env *env.Config, log contract.Log) erro
 		return nil
 	}
 
-	var handler2 databus2.ConsumerHandler = func(ctx context.Context, message kafka.Message) error {
+	var handler2 databus3.ConsumerHandler = func(ctx context.Context, message kafka.Message) error {
 		fmt.Println("-------------------------")
 		fmt.Println("Handler 2 receive message")
 		fmt.Println(message)
@@ -123,7 +123,7 @@ func databusExample(ctx context.Context, env *env.Config, log contract.Log) erro
 
 			time.Sleep(1 * time.Second)
 
-			msgs1 := []*databus2.Message{
+			msgs1 := []*databus3.Message{
 				{
 					Key:     "key1",
 					Payload: []byte(time.Now().String()),
@@ -134,7 +134,7 @@ func databusExample(ctx context.Context, env *env.Config, log contract.Log) erro
 				},
 			}
 
-			msgs2 := []*databus2.Message{
+			msgs2 := []*databus3.Message{
 				{
 					Key:     "key3",
 					Payload: []byte(time.Now().String()),

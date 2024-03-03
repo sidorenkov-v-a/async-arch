@@ -5,7 +5,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"async-arch/boilerplate/internal/infrastructure/di/config"
+	"async-arch/boilerplate/pkg/config"
 )
 
 type Server struct {

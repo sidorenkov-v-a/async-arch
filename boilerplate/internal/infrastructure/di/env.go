@@ -6,7 +6,7 @@ import (
 
 	"github.com/ilyakaznacheev/cleanenv"
 
-	"async-arch/boilerplate/internal/infrastructure/di/env"
+	"async-arch/boilerplate/pkg/env"
 )
 
 func NewEnv() (*env.Config, error) {

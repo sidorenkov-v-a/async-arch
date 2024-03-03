@@ -1,7 +1,7 @@
 package di
 
 import (
-	"async-arch/boilerplate/internal/infrastructure/di/config"
+	"async-arch/boilerplate/pkg/config"
 )
 
 func NewConfig() (*config.Config, error) {
