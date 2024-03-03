@@ -6,7 +6,7 @@ import (
 
 	"github.com/ilyakaznacheev/cleanenv"
 
-	"async-arch/boilerplate/pkg/env"
+	"async-arch/auth/pkg/env"
 )
 
 func NewEnv() (*env.Config, error) {

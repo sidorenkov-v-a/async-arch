@@ -6,7 +6,7 @@ import (
 
 	"github.com/segmentio/kafka-go"
 
-	"async-arch/boilerplate/internal/infrastructure/contract"
+	"async-arch/auth/internal/infrastructure/contract"
 )
 
 type ConsumerHandler func(ctx context.Context, message kafka.Message) error

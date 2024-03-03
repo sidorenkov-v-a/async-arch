@@ -7,7 +7,7 @@ import (
 
 	"github.com/segmentio/kafka-go"
 
-	"async-arch/boilerplate/internal/infrastructure/contract"
+	"async-arch/auth/internal/infrastructure/contract"
 )
 
 type Message struct {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"async-arch/boilerplate/pkg/env"
+	"async-arch/auth/pkg/env"
 )
 
 type Server struct {

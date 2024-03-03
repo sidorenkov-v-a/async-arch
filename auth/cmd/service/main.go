@@ -7,8 +7,9 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"async-arch/boilerplate/internal/infrastructure/contract"
-	"async-arch/boilerplate/internal/infrastructure/di"
+	"async-arch/auth/internal/api/middleware"
+	"async-arch/auth/internal/infrastructure/contract"
+	"async-arch/auth/internal/infrastructure/di"
 )
 
 const (
@@ -53,18 +54,17 @@ func run(ctx context.Context, log contract.Log) (err error) {
 	}
 
 	// Database
-	_, err = di.NewDB(env.DB)
-	if err != nil {
-		return err
-	}
+	//_, err = di.NewDB(env.DB)
+	//if err != nil {
+	//	return err
+	//}
 
 	// Repositories
 
 	// API
-
-	//TODO:
-	//https://github.com/deepmap/oapi-codegen/tree/master/examples/petstore-expanded/gorilla
 	r := mux.NewRouter()
+
+	r.Use(middleware.JSONMiddleware)
 
 	// Run API Server
 	apiServer := di.NewAPIServer(&env.Server)

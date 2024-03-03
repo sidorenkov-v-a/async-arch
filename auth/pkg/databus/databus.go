@@ -3,8 +3,8 @@ package databus
 import (
 	"fmt"
 
-	"async-arch/boilerplate/internal/infrastructure/contract"
-	"async-arch/boilerplate/pkg/env"
+	"async-arch/auth/internal/infrastructure/contract"
+	"async-arch/auth/pkg/env"
 )
 
 type Databus struct {
