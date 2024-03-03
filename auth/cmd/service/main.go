@@ -7,6 +7,10 @@ import (
 
 	"github.com/gorilla/mux"
 
+	oapiMiddleware "github.com/oapi-codegen/nethttp-middleware"
+
+	api_client "async-arch/auth/api/generated"
+	"async-arch/auth/internal/api"
 	"async-arch/auth/internal/api/middleware"
 	"async-arch/auth/internal/infrastructure/contract"
 	"async-arch/auth/internal/infrastructure/di"
@@ -62,9 +66,21 @@ func run(ctx context.Context, log contract.Log) (err error) {
 	// Repositories
 
 	// API
+	swagger, err := api_client.GetSwagger()
+	if err != nil {
+		return err
+	}
+
+	swagger.Servers = nil
+
+	server := api.NewServer()
+
 	r := mux.NewRouter()
 
+	r.Use(oapiMiddleware.OapiRequestValidator(swagger))
 	r.Use(middleware.JSONMiddleware)
+
+	api_client.HandlerFromMux(server, r)
 
 	// Run API Server
 	apiServer := di.NewAPIServer(&env.Server)
