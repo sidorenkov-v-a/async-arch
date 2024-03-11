@@ -13,6 +13,9 @@ import (
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 
+	// (POST /login/)
+	LoginUser(w http.ResponseWriter, r *http.Request)
+
 	// (POST /register/)
 	RegisterUser(w http.ResponseWriter, r *http.Request)
 }
@@ -25,6 +28,21 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(http.Handler) http.Handler
+
+// LoginUser operation middleware
+func (siw *ServerInterfaceWrapper) LoginUser(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.LoginUser(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
 
 // RegisterUser operation middleware
 func (siw *ServerInterfaceWrapper) RegisterUser(w http.ResponseWriter, r *http.Request) {
@@ -153,6 +171,8 @@ func HandlerWithOptions(si ServerInterface, options GorillaServerOptions) http.H
 		HandlerMiddlewares: options.Middlewares,
 		ErrorHandlerFunc:   options.ErrorHandlerFunc,
 	}
+
+	r.HandleFunc(options.BaseURL+"/login/", wrapper.LoginUser).Methods("POST")
 
 	r.HandleFunc(options.BaseURL+"/register/", wrapper.RegisterUser).Methods("POST")
 

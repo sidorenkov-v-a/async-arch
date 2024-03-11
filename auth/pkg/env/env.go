@@ -15,8 +15,13 @@ type Server struct {
 	BindAddr string `env:"SERVER_BIND_ADDR"`
 }
 
+type JWT struct {
+	Secret string `env:"JWT_SECRET"`
+}
+
 type Config struct {
 	DB      Database
 	Databus Databus
 	Server  Server
+	JWT     JWT
 }
