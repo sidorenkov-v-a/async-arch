@@ -7,7 +7,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"async-arch/auth/internal/infrastructure/contract"
+	"async-arch/auth/internal/infrastructure/di"
 	"async-arch/auth/internal/pkg/domain"
+	"async-arch/auth/pkg/databus"
 )
 
 var (
@@ -25,12 +27,16 @@ type In struct {
 type usecase struct {
 	usersRepo domain.UserRepository
 	log       contract.Log
+	producer  *databus.Producer
 }
 
-func New(usersRepo domain.UserRepository, log contract.Log) *usecase {
+func New(usersRepo domain.UserRepository, log contract.Log, databus *databus.Databus) *usecase {
+	producer := di.NewProducer(databus, "auth.user_created")
+
 	return &usecase{
 		usersRepo: usersRepo,
 		log:       log,
+		producer:  producer,
 	}
 }
 
@@ -56,7 +62,16 @@ func (u *usecase) Run(ctx context.Context, in In) (*domain.User, error) {
 		FirstName:    in.FirstName,
 		LastName:     in.LastName,
 	})
+	if err != nil {
+		return nil, err
+	}
 
+	msg, err := userToMessage(user)
+	if err != nil {
+		return nil, err
+	}
+
+	err = u.producer.Produce(ctx, msg)
 	if err != nil {
 		return nil, err
 	}

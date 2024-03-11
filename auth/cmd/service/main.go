@@ -6,7 +6,6 @@ import (
 	"os/signal"
 
 	"github.com/gorilla/mux"
-
 	oapiMiddleware "github.com/oapi-codegen/nethttp-middleware"
 
 	api_client "async-arch/auth/api/generated"
@@ -60,6 +59,8 @@ func run(ctx context.Context, log contract.Log) (err error) {
 		return err
 	}
 
+	databus := di.NewDatabus(env.Databus, log)
+
 	// Database
 	db, err := di.NewDB(env.DB)
 	if err != nil {
@@ -70,7 +71,7 @@ func run(ctx context.Context, log contract.Log) (err error) {
 	usersRepo := repository.NewUsersRepository(db)
 
 	// Usecases
-	registerUserUsecase := register_user.New(usersRepo, log)
+	registerUserUsecase := register_user.New(usersRepo, log, databus)
 	loginUsecase := login_user.New(usersRepo, log, env.JWT)
 
 	// API
