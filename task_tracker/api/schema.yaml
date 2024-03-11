@@ -1,0 +1,67 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Swagger task_tracker
+  description: task tracker service
+paths:
+  /tasks/:
+    post:
+      description: Create new task
+      operationId: createTask
+      requestBody:
+        description: Task data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        default:
+          description: error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    TaskCreate:
+      type: object
+      required:
+        - title
+        - userID
+      properties:
+        title:
+          type: string
+        userID:
+          type: string
+          format: uuid
+
+    Task:
+      type: object
+      required:
+        - title
+        - userID
+      properties:
+        title:
+          type: string
+        userID:
+          type: string
+          format: uuid
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+        message:
+          type: string

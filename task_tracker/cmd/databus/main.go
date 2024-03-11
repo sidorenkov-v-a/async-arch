@@ -5,14 +5,12 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/gorilla/mux"
-	oapiMiddleware "github.com/oapi-codegen/nethttp-middleware"
+	"golang.org/x/sync/errgroup"
 
-	api_client "async-arch/task_tracker/api/generated"
-	"async-arch/task_tracker/internal/api"
-	"async-arch/task_tracker/internal/api/middleware"
+	"async-arch/task_tracker/internal/databus/auth/user_created"
 	"async-arch/task_tracker/internal/infrastructure/contract"
 	"async-arch/task_tracker/internal/infrastructure/di"
+	"async-arch/task_tracker/internal/pkg/repository"
 )
 
 const (
@@ -56,38 +54,31 @@ func run(ctx context.Context, log contract.Log) (err error) {
 		return err
 	}
 
-	//databus := di.NewDatabus(env.Databus, log)
+	databus := di.NewDatabus(env.Databus, log)
 
 	// Database
-	_, err = di.NewDB(env.DB)
+	db, err := di.NewDB(env.DB)
 	if err != nil {
 		return err
 	}
 
 	// Repositories
-	//usersRepo := repository.NewUsersRepository(db)
+	usersRepo := repository.NewUsersRepository(db)
 
-	// Usecases
+	// Handlers
+	userCreatedHandler := user_created.New(usersRepo)
 
-	// API
-	swagger, err := api_client.GetSwagger()
-	if err != nil {
+	userCreatedConsumer := di.NewConsumer(databus, "auth.user_created", "auth", userCreatedHandler.Handle)
+
+	g, gCtx := errgroup.WithContext(ctx)
+
+	g.Go(func() error {
+		return userCreatedConsumer.Consume(gCtx)
+	})
+
+	if err = g.Wait(); err != nil {
 		return err
 	}
 
-	swagger.Servers = nil
-
-	server := api.NewServer()
-
-	r := mux.NewRouter()
-
-	r.Use(oapiMiddleware.OapiRequestValidator(swagger))
-	r.Use(middleware.JSONMiddleware)
-
-	api_client.HandlerFromMux(server, r)
-
-	// Run API Server
-	apiServer := di.NewAPIServer(&env.Server)
-
-	return apiServer.Run(r)
+	return nil
 }
