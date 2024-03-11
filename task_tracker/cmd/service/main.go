@@ -13,6 +13,7 @@ import (
 	"async-arch/task_tracker/internal/api/middleware"
 	"async-arch/task_tracker/internal/infrastructure/contract"
 	"async-arch/task_tracker/internal/infrastructure/di"
+	"async-arch/task_tracker/internal/pkg/repository"
 )
 
 const (
@@ -59,15 +60,18 @@ func run(ctx context.Context, log contract.Log) (err error) {
 	//databus := di.NewDatabus(env.Databus, log)
 
 	// Database
-	_, err = di.NewDB(env.DB)
+	db, err := di.NewDB(env.DB)
 	if err != nil {
 		return err
 	}
 
 	// Repositories
-	//usersRepo := repository.NewUsersRepository(db)
+	usersRepo := repository.NewUsersRepository(db)
 
 	// Usecases
+
+	// Middleware
+	authMeddleware := middleware.NewAuthMiddleware(env.JWT, usersRepo)
 
 	// API
 	swagger, err := api_client.GetSwagger()
@@ -83,6 +87,7 @@ func run(ctx context.Context, log contract.Log) (err error) {
 
 	r.Use(oapiMiddleware.OapiRequestValidator(swagger))
 	r.Use(middleware.JSONMiddleware)
+	r.Use(authMeddleware.Handle)
 
 	api_client.HandlerFromMux(server, r)
 
