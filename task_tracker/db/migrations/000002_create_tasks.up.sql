@@ -1,8 +1,9 @@
 create table if not exists tasks
 (
     id          uuid primary key      default uuid_generate_v4(),
-    user_id     uuid references users (id),
-    jira_id     integer      not null,
+    reporter_id uuid references users (id),
+    assignee_id uuid references users (id),
+    jira_id     serial,
     title       text         not null,
     description text         not null,
     status      varchar(256) not null,

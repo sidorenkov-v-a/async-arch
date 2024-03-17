@@ -2,7 +2,7 @@
 
 DB_URL = "postgresql://localhost:${POSTGRES_PORT}/postgres?user=${POSTGRES_USER}&password=${POSTGRES_PASSWORD}&sslmode=disable"
 
-generate:
+codegen:
 	oapi-codegen -generate gorilla -package api_client ./api/schema.yaml > ./api/generated/server.go
 	oapi-codegen -generate types -package api_client ./api/schema.yaml > ./api/generated/types.go
 	oapi-codegen -generate spec -package api_client ./api/schema.yaml > ./api/generated/swagger.go

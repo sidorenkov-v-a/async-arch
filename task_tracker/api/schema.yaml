@@ -34,15 +34,15 @@ components:
     TaskCreate:
       type: object
       required:
-        - jiraID
         - title
-        - userID
+        - description
+        - assigneeID
       properties:
-        jiraID:
-          type: integer
         title:
           type: string
-        userID:
+        description:
+          type: string
+        assigneeID:
           type: string
           format: uuid
 
@@ -51,15 +51,30 @@ components:
       required:
         - jiraID
         - title
-        - userID
+        - assigneeID
+        - reporterID
+        - status
+        - createdAt
+        - updatedAt
       properties:
         jiraID:
           type: integer
         title:
           type: string
-        userID:
+        assigneeID:
           type: string
           format: uuid
+        reporterID:
+          type: string
+          format: uuid
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
 
     Error:
       type: object

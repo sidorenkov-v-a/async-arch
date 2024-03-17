@@ -6,6 +6,7 @@ import (
 	"errors"
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 
 	"async-arch/task_tracker/internal/pkg/domain"
@@ -68,16 +69,33 @@ func (r *usersRepo) GetByEmail(ctx context.Context, email string) (*domain.User,
 	return &user, nil
 }
 
-func (r *usersRepo) Exists(ctx context.Context, email string) (bool, error) {
-	query := `SELECT EXISTS(SELECT 1 FROM users WHERE email = ?)`
+func (r *usersRepo) Exists(ctx context.Context, id uuid.UUID) (bool, error) {
+	query := `SELECT EXISTS(SELECT 1 FROM users WHERE id = ?)`
 
 	out := false
 
 	if err := trmsqlx.DefaultCtxGetter.DefaultTrOrDB(ctx, r.db).
-		GetContext(ctx, &out, r.db.Rebind(query), email); err != nil {
+		GetContext(ctx, &out, r.db.Rebind(query), id); err != nil {
 
 		return false, err
 	}
 
 	return out, nil
+}
+
+func (r *usersRepo) GetByID(ctx context.Context, id uuid.UUID) (*domain.User, error) {
+	query := `SELECT * FROM users WHERE id = ?;`
+
+	user := domain.User{}
+
+	if err := trmsqlx.DefaultCtxGetter.DefaultTrOrDB(ctx, r.db).
+		GetContext(ctx, &user, r.db.Rebind(query), id); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, domain.ErrUserNotFound
+		}
+
+		return nil, err
+	}
+
+	return &user, nil
 }

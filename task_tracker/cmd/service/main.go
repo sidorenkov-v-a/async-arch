@@ -14,6 +14,7 @@ import (
 	"async-arch/task_tracker/internal/infrastructure/contract"
 	"async-arch/task_tracker/internal/infrastructure/di"
 	"async-arch/task_tracker/internal/pkg/repository"
+	"async-arch/task_tracker/internal/pkg/usecase/create_task"
 )
 
 const (
@@ -57,7 +58,7 @@ func run(ctx context.Context, log contract.Log) (err error) {
 		return err
 	}
 
-	//databus := di.NewDatabus(env.Databus, log)
+	databus := di.NewDatabus(env.Databus, log)
 
 	// Database
 	db, err := di.NewDB(env.DB)
@@ -67,11 +68,13 @@ func run(ctx context.Context, log contract.Log) (err error) {
 
 	// Repositories
 	usersRepo := repository.NewUsersRepository(db)
+	tasksRepo := repository.NewTasksRepository(db)
 
 	// Usecases
+	createTaskUsecase := create_task.New(tasksRepo, usersRepo, databus)
 
 	// Middleware
-	authMeddleware := middleware.NewAuthMiddleware(env.JWT, usersRepo)
+	authMiddleware := middleware.NewAuthMiddleware(env.JWT, usersRepo)
 
 	// API
 	swagger, err := api_client.GetSwagger()
@@ -81,13 +84,13 @@ func run(ctx context.Context, log contract.Log) (err error) {
 
 	swagger.Servers = nil
 
-	server := api.NewServer()
+	server := api.NewServer(createTaskUsecase)
 
 	r := mux.NewRouter()
 
 	r.Use(oapiMiddleware.OapiRequestValidator(swagger))
 	r.Use(middleware.JSONMiddleware)
-	r.Use(authMeddleware.Handle)
+	r.Use(authMiddleware.Handle)
 
 	api_client.HandlerFromMux(server, r)
 

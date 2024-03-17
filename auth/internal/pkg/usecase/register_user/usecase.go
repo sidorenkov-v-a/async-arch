@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 
 	"async-arch/auth/internal/infrastructure/contract"
@@ -56,6 +57,7 @@ func (u *usecase) Run(ctx context.Context, in In) (*domain.User, error) {
 	}
 
 	user, err := u.usersRepo.Upsert(ctx, domain.User{
+		ID:           uuid.New(),
 		Email:        in.Email,
 		Role:         in.Role,
 		HashPassword: hashPass,

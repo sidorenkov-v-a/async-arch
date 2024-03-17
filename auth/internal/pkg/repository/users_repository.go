@@ -20,8 +20,8 @@ func NewUsersRepository(db *sqlx.DB) *usersRepo {
 }
 
 func (r *usersRepo) Upsert(ctx context.Context, in domain.User) (*domain.User, error) {
-	query := `INSERT INTO users(email, role, hash_password, first_name, last_name, updated_at)
-VALUES (:email, :role, :hash_password, :first_name, :last_name, NOW())
+	query := `INSERT INTO users(id, email, role, hash_password, first_name, last_name, updated_at)
+VALUES (:id, :email, :role, :hash_password, :first_name, :last_name, NOW())
 ON CONFLICT (id)
     DO UPDATE SET email         = excluded.email,
                   role          = excluded.role,

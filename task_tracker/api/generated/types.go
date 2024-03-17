@@ -4,6 +4,8 @@
 package api_client
 
 import (
+	"time"
+
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
@@ -15,14 +17,20 @@ type Error struct {
 
 // Task defines model for Task.
 type Task struct {
-	Title  string             `json:"title"`
-	UserID openapi_types.UUID `json:"userID"`
+	AssigneeID openapi_types.UUID `json:"assigneeID"`
+	CreatedAt  time.Time          `json:"createdAt"`
+	JiraID     int                `json:"jiraID"`
+	ReporterID openapi_types.UUID `json:"reporterID"`
+	Status     string             `json:"status"`
+	Title      string             `json:"title"`
+	UpdatedAt  time.Time          `json:"updatedAt"`
 }
 
 // TaskCreate defines model for TaskCreate.
 type TaskCreate struct {
-	Title  string             `json:"title"`
-	UserID openapi_types.UUID `json:"userID"`
+	AssigneeID  openapi_types.UUID `json:"assigneeID"`
+	Description string             `json:"description"`
+	Title       string             `json:"title"`
 }
 
 // CreateTaskJSONRequestBody defines body for CreateTask for application/json ContentType.
