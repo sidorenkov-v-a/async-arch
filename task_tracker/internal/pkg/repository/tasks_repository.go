@@ -17,7 +17,7 @@ func NewTasksRepository(db *sqlx.DB) *tasksRepo {
 	return &tasksRepo{db: db}
 }
 
-func (r *tasksRepo) Upsert(ctx context.Context, task *domain.Task) (*domain.Task, error) {
+func (r *tasksRepo) Upsert(ctx context.Context, tasks ...*domain.Task) (*domain.Task, error) {
 	query := `INSERT INTO tasks(id, reporter_id, assignee_id, title, description, status, updated_at)
 VALUES (:id, :reporter_id, :assignee_id, :title, :description, :status, now())
 ON CONFLICT (id)
@@ -31,7 +31,7 @@ where tasks.updated_at < excluded.updated_at
 
 RETURNING *;`
 
-	res, err := sqlx.NamedQueryContext(ctx, trmsqlx.DefaultCtxGetter.DefaultTrOrDB(ctx, r.db), query, task)
+	res, err := sqlx.NamedQueryContext(ctx, trmsqlx.DefaultCtxGetter.DefaultTrOrDB(ctx, r.db), query, tasks)
 	if err != nil {
 		return nil, err
 	}
@@ -47,4 +47,17 @@ RETURNING *;`
 	}
 
 	return &out, nil
+}
+
+func (r *tasksRepo) AllTasks(ctx context.Context) ([]*domain.Task, error) {
+	query := `select * from tasks;`
+
+	tasks := make([]*domain.Task, 0, 100)
+
+	err := sqlx.SelectContext(ctx, trmsqlx.DefaultCtxGetter.DefaultTrOrDB(ctx, r.db), &tasks, query)
+	if err != nil {
+		return nil, err
+	}
+
+	return tasks, nil
 }

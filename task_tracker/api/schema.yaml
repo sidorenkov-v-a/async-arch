@@ -29,6 +29,24 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /tasks/reassign/:
+    post:
+      description: Reassign all tasks
+      operationId: reassignTasks
+      requestBody:
+        description: Empty data
+        required: false
+        content:
+          application/json: {}
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+
+
 components:
   schemas:
     TaskCreate:
@@ -85,4 +103,12 @@ components:
         code:
           type: integer
         message:
+          type: string
+
+    Ok:
+      type: object
+      required:
+        - status
+      properties:
+        status:
           type: string

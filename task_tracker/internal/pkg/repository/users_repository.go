@@ -99,3 +99,16 @@ func (r *usersRepo) GetByID(ctx context.Context, id uuid.UUID) (*domain.User, er
 
 	return &user, nil
 }
+
+func (r *usersRepo) AllEmployeeIDs(ctx context.Context) ([]uuid.UUID, error) {
+	query := `SELECT users.id FROM users where role = 'employee'`
+
+	employeeIDs := make([]uuid.UUID, 0, 0)
+
+	if err := trmsqlx.DefaultCtxGetter.DefaultTrOrDB(ctx, r.db).
+		SelectContext(ctx, &employeeIDs, r.db.Rebind(query)); err != nil {
+		return nil, err
+	}
+
+	return employeeIDs, nil
+}

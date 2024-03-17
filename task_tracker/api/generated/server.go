@@ -15,6 +15,9 @@ type ServerInterface interface {
 
 	// (POST /tasks/)
 	CreateTask(w http.ResponseWriter, r *http.Request)
+
+	// (POST /tasks/reassign/)
+	ReassignTasks(w http.ResponseWriter, r *http.Request)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -32,6 +35,21 @@ func (siw *ServerInterfaceWrapper) CreateTask(w http.ResponseWriter, r *http.Req
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.CreateTask(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// ReassignTasks operation middleware
+func (siw *ServerInterfaceWrapper) ReassignTasks(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ReassignTasks(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -155,6 +173,8 @@ func HandlerWithOptions(si ServerInterface, options GorillaServerOptions) http.H
 	}
 
 	r.HandleFunc(options.BaseURL+"/tasks/", wrapper.CreateTask).Methods("POST")
+
+	r.HandleFunc(options.BaseURL+"/tasks/reassign/", wrapper.ReassignTasks).Methods("POST")
 
 	return r
 }

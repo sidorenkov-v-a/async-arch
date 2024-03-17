@@ -15,6 +15,7 @@ import (
 	"async-arch/task_tracker/internal/infrastructure/di"
 	"async-arch/task_tracker/internal/pkg/repository"
 	"async-arch/task_tracker/internal/pkg/usecase/create_task"
+	"async-arch/task_tracker/internal/pkg/usecase/reassign_tasks"
 )
 
 const (
@@ -72,6 +73,7 @@ func run(ctx context.Context, log contract.Log) (err error) {
 
 	// Usecases
 	createTaskUsecase := create_task.New(tasksRepo, usersRepo, databus)
+	reassignTasksUsecase := reassign_tasks.New(tasksRepo, usersRepo)
 
 	// Middleware
 	authMiddleware := middleware.NewAuthMiddleware(env.JWT, usersRepo)
@@ -84,7 +86,7 @@ func run(ctx context.Context, log contract.Log) (err error) {
 
 	swagger.Servers = nil
 
-	server := api.NewServer(createTaskUsecase)
+	server := api.NewServer(createTaskUsecase, reassignTasksUsecase)
 
 	r := mux.NewRouter()
 

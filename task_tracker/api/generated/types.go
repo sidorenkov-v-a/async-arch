@@ -15,6 +15,11 @@ type Error struct {
 	Message string `json:"message"`
 }
 
+// Ok defines model for Ok.
+type Ok struct {
+	Status string `json:"status"`
+}
+
 // Task defines model for Task.
 type Task struct {
 	AssigneeID openapi_types.UUID `json:"assigneeID"`
@@ -33,5 +38,11 @@ type TaskCreate struct {
 	Title       string             `json:"title"`
 }
 
+// ReassignTasksJSONBody defines parameters for ReassignTasks.
+type ReassignTasksJSONBody interface{}
+
 // CreateTaskJSONRequestBody defines body for CreateTask for application/json ContentType.
 type CreateTaskJSONRequestBody = TaskCreate
+
+// ReassignTasksJSONRequestBody defines body for ReassignTasks for application/json ContentType.
+type ReassignTasksJSONRequestBody ReassignTasksJSONBody

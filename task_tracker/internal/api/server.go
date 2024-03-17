@@ -9,14 +9,16 @@ import (
 	api_client "async-arch/task_tracker/api/generated"
 	"async-arch/task_tracker/internal/pkg/domain"
 	"async-arch/task_tracker/internal/pkg/usecase/create_task"
+	"async-arch/task_tracker/internal/pkg/usecase/reassign_tasks"
 )
 
 type server struct {
-	createTaskUsecase create_task.Usecase
+	createTaskUsecase    create_task.Usecase
+	reassignTasksUsecase reassign_tasks.Usecase
 }
 
-func NewServer(createTaskUsecase create_task.Usecase) *server {
-	return &server{createTaskUsecase: createTaskUsecase}
+func NewServer(createTaskUsecase create_task.Usecase, reassignTasksUsecase reassign_tasks.Usecase) *server {
+	return &server{createTaskUsecase: createTaskUsecase, reassignTasksUsecase: reassignTasksUsecase}
 }
 
 func badRequest(w http.ResponseWriter, err error) {
@@ -83,4 +85,24 @@ func (s *server) CreateTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
+}
+
+func (s *server) ReassignTasks(w http.ResponseWriter, r *http.Request) {
+	err := s.reassignTasksUsecase.Run(r.Context())
+	if err != nil {
+		badRequest(w, err)
+		return
+	}
+
+	out := api_client.Ok{
+		Status: "Ok",
+	}
+
+	err = json.NewEncoder(w).Encode(out)
+	if err != nil {
+		internalError(w, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
