@@ -2,12 +2,15 @@ create table if not exists tasks
 (
     id          uuid primary key      default uuid_generate_v4(),
     user_id     uuid references users (id),
+    jira_id     integer      not null,
     title       text         not null,
     description text         not null,
     status      varchar(256) not null,
     created_at  timestamp    not null default current_timestamp,
     updated_at  timestamp    not null default current_timestamp
 );
+
+create index if not exists tasks_jira_idx on tasks (jira_id);
 
 create index if not exists tasks_status_idx on tasks (status);
 
