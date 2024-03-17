@@ -34,9 +34,12 @@ components:
     TaskCreate:
       type: object
       required:
+        - jiraID
         - title
         - userID
       properties:
+        jiraID:
+          type: integer
         title:
           type: string
         userID:
@@ -46,9 +49,12 @@ components:
     Task:
       type: object
       required:
+        - jiraID
         - title
         - userID
       properties:
+        jiraID:
+          type: integer
         title:
           type: string
         userID:
