@@ -17,7 +17,7 @@ func NewTasksRepository(db *sqlx.DB) *tasksRepo {
 	return &tasksRepo{db: db}
 }
 
-func (r *tasksRepo) Upsert(ctx context.Context, tasks ...*domain.Task) (*domain.Task, error) {
+func (r *tasksRepo) Upsert(ctx context.Context, tasks ...*domain.Task) ([]*domain.Task, error) {
 	query := `INSERT INTO tasks(id, reporter_id, assignee_id, title, description, status, updated_at)
 VALUES (:id, :reporter_id, :assignee_id, :title, :description, :status, now())
 ON CONFLICT (id)
@@ -38,15 +38,18 @@ RETURNING *;`
 
 	defer res.Close()
 
-	out := domain.Task{}
-	if res.Next() {
-		err = res.StructScan(&out)
+	out := make([]*domain.Task, 0, len(tasks))
+	for res.Next() {
+		task := domain.Task{}
+		err = res.StructScan(&task)
 		if err != nil {
 			return nil, err
 		}
+
+		out = append(out, &task)
 	}
 
-	return &out, nil
+	return out, nil
 }
 
 func (r *tasksRepo) AllTasks(ctx context.Context) ([]*domain.Task, error) {

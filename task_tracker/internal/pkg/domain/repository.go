@@ -15,6 +15,6 @@ type UserRepository interface {
 }
 
 type TasksRepository interface {
-	Upsert(ctx context.Context, tasks ...*Task) (*Task, error)
+	Upsert(ctx context.Context, tasks ...*Task) ([]*Task, error)
 	AllTasks(ctx context.Context) ([]*Task, error)
 }

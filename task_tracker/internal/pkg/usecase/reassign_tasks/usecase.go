@@ -5,30 +5,24 @@ import (
 	"math/rand"
 
 	"async-arch/task_tracker/internal/pkg/domain"
+	"async-arch/task_tracker/internal/pkg/producer"
 )
 
 type usecase struct {
-	tasksRepository domain.TasksRepository
-	usersRepository domain.UserRepository
-	//taskCreatedProducer  *databus.Producer
-	//TaskAssignedProducer *databus.Producer
+	tasksRepository      domain.TasksRepository
+	usersRepository      domain.UserRepository
+	taskAssignedProducer producer.TaskAssignedProducer
 }
 
 func New(
 	tasksRepository domain.TasksRepository,
 	usersRepository domain.UserRepository,
-	// usersRepository domain.UserRepository,
-	// databus *databus.Databus,
+	taskAssignedProducer producer.TaskAssignedProducer,
 ) *usecase {
-	//taskCreatedProducer := di.NewProducer(databus, "tasks.task_assigned")
-	//taskAssignedProducer := di.NewProducer(databus, "tasks.task_created")
-
 	return &usecase{
-		tasksRepository: tasksRepository,
-		usersRepository: usersRepository,
-		//usersRepository:      usersRepository,
-		//taskCreatedProducer:  taskCreatedProducer,
-		//TaskAssignedProducer: taskAssignedProducer,
+		tasksRepository:      tasksRepository,
+		usersRepository:      usersRepository,
+		taskAssignedProducer: taskAssignedProducer,
 	}
 }
 
@@ -50,10 +44,10 @@ func (u *usecase) Run(ctx context.Context) error {
 		task.AssigneeID = pick
 	}
 
-	_, err = u.tasksRepository.Upsert(ctx, tasks...)
+	tasks, err = u.tasksRepository.Upsert(ctx, tasks...)
 	if err != nil {
 		return err
 	}
 
-	return err
+	return u.taskAssignedProducer.Produce(ctx, tasks...)
 }

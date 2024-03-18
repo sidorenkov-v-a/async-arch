@@ -6,9 +6,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"async-arch/task_tracker/internal/infrastructure/di"
 	"async-arch/task_tracker/internal/pkg/domain"
-	"async-arch/task_tracker/pkg/databus"
+	"async-arch/task_tracker/internal/pkg/producer"
 )
 
 var (
@@ -29,19 +28,21 @@ type In struct {
 type usecase struct {
 	tasksRepository      domain.TasksRepository
 	usersRepository      domain.UserRepository
-	taskCreatedProducer  *databus.Producer
-	TaskAssignedProducer *databus.Producer
+	taskCreatedProducer  producer.TaskCreatedProducer
+	taskAssignedProducer producer.TaskAssignedProducer
 }
 
-func New(tasksRepository domain.TasksRepository, usersRepository domain.UserRepository, databus *databus.Databus) *usecase {
-	taskCreatedProducer := di.NewProducer(databus, "tasks.task_assigned")
-	taskAssignedProducer := di.NewProducer(databus, "tasks.task_created")
-
+func New(
+	tasksRepository domain.TasksRepository,
+	usersRepository domain.UserRepository,
+	taskCreatedProducer producer.TaskCreatedProducer,
+	taskAssignedProducer producer.TaskAssignedProducer,
+) *usecase {
 	return &usecase{
 		tasksRepository:      tasksRepository,
 		usersRepository:      usersRepository,
 		taskCreatedProducer:  taskCreatedProducer,
-		TaskAssignedProducer: taskAssignedProducer,
+		taskAssignedProducer: taskAssignedProducer,
 	}
 }
 
@@ -51,7 +52,7 @@ func (u *usecase) Run(ctx context.Context, in In) (*domain.Task, error) {
 		return nil, err
 	}
 
-	task, err := u.tasksRepository.Upsert(ctx, &domain.Task{
+	tasks, err := u.tasksRepository.Upsert(ctx, &domain.Task{
 		ID:          uuid.New(),
 		ReporterID:  in.ReporterID,
 		AssigneeID:  in.AssigneeID,
@@ -61,7 +62,9 @@ func (u *usecase) Run(ctx context.Context, in In) (*domain.Task, error) {
 		Status:      "new",
 	})
 
-	err = u.produce(ctx, task)
+	task := tasks[0]
+
+	err = u.taskCreatedProducer.Produce(ctx, task)
 	if err != nil {
 		return nil, err
 	}
@@ -95,30 +98,6 @@ func (u *usecase) validate(ctx context.Context, in In) error {
 
 	if assignee.Role != "employee" {
 		return ErrIncorrectAssigneeRole
-	}
-
-	return nil
-}
-
-func (u *usecase) produce(ctx context.Context, task *domain.Task) error {
-	msg, err := taskToTaskCreatedMessage(task)
-	if err != nil {
-		return err
-	}
-
-	err = u.taskCreatedProducer.Produce(ctx, msg)
-	if err != nil {
-		return err
-	}
-
-	msg, err = taskToTaskAssignedMessage(task)
-	if err != nil {
-		return err
-	}
-
-	err = u.TaskAssignedProducer.Produce(ctx, msg)
-	if err != nil {
-		return err
 	}
 
 	return nil

@@ -13,6 +13,8 @@ import (
 	"async-arch/task_tracker/internal/api/middleware"
 	"async-arch/task_tracker/internal/infrastructure/contract"
 	"async-arch/task_tracker/internal/infrastructure/di"
+	"async-arch/task_tracker/internal/pkg/producer/task_assigned"
+	"async-arch/task_tracker/internal/pkg/producer/task_created"
 	"async-arch/task_tracker/internal/pkg/repository"
 	"async-arch/task_tracker/internal/pkg/usecase/create_task"
 	"async-arch/task_tracker/internal/pkg/usecase/reassign_tasks"
@@ -71,9 +73,13 @@ func run(ctx context.Context, log contract.Log) (err error) {
 	usersRepo := repository.NewUsersRepository(db)
 	tasksRepo := repository.NewTasksRepository(db)
 
+	//Producers
+	taskCreatedProducer := task_created.NewProducer(databus)
+	taskAssignedProducer := task_assigned.NewProducer(databus)
+
 	// Usecases
-	createTaskUsecase := create_task.New(tasksRepo, usersRepo, databus)
-	reassignTasksUsecase := reassign_tasks.New(tasksRepo, usersRepo)
+	createTaskUsecase := create_task.New(tasksRepo, usersRepo, taskCreatedProducer, taskAssignedProducer)
+	reassignTasksUsecase := reassign_tasks.New(tasksRepo, usersRepo, taskAssignedProducer)
 
 	// Middleware
 	authMiddleware := middleware.NewAuthMiddleware(env.JWT, usersRepo)
