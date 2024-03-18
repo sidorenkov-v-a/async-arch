@@ -18,6 +18,15 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
 
+  db_billing:
+    image: postgres
+    restart: always
+    ports:
+      - "5441:5433"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+
   kafka:
     image: wurstmeister/kafka
     restart: on-failure
