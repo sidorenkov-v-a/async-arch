@@ -6,10 +6,16 @@ import (
 	"os/signal"
 
 	"github.com/gorilla/mux"
+	oapiMiddleware "github.com/oapi-codegen/nethttp-middleware"
 
+	api_client "async-arch/auth/api/generated"
+	"async-arch/auth/internal/api"
 	"async-arch/auth/internal/api/middleware"
 	"async-arch/auth/internal/infrastructure/contract"
 	"async-arch/auth/internal/infrastructure/di"
+	"async-arch/auth/internal/pkg/repository"
+	"async-arch/auth/internal/pkg/usecase/login_user"
+	"async-arch/auth/internal/pkg/usecase/register_user"
 )
 
 const (
@@ -53,18 +59,37 @@ func run(ctx context.Context, log contract.Log) (err error) {
 		return err
 	}
 
+	databus := di.NewDatabus(env.Databus, log)
+
 	// Database
-	//_, err = di.NewDB(env.DB)
-	//if err != nil {
-	//	return err
-	//}
+	db, err := di.NewDB(env.DB)
+	if err != nil {
+		return err
+	}
 
 	// Repositories
+	usersRepo := repository.NewUsersRepository(db)
+
+	// Usecases
+	registerUserUsecase := register_user.New(usersRepo, log, databus)
+	loginUsecase := login_user.New(usersRepo, log, env.JWT)
 
 	// API
+	swagger, err := api_client.GetSwagger()
+	if err != nil {
+		return err
+	}
+
+	swagger.Servers = nil
+
+	server := api.NewServer(registerUserUsecase, loginUsecase)
+
 	r := mux.NewRouter()
 
+	r.Use(oapiMiddleware.OapiRequestValidator(swagger))
 	r.Use(middleware.JSONMiddleware)
+
+	api_client.HandlerFromMux(server, r)
 
 	// Run API Server
 	apiServer := di.NewAPIServer(&env.Server)
