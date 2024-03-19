@@ -16,6 +16,7 @@ import (
 	"async-arch/task_tracker/internal/pkg/producer/task_assigned"
 	"async-arch/task_tracker/internal/pkg/producer/task_created"
 	"async-arch/task_tracker/internal/pkg/repository"
+	"async-arch/task_tracker/internal/pkg/usecase/complete_task"
 	"async-arch/task_tracker/internal/pkg/usecase/create_task"
 	"async-arch/task_tracker/internal/pkg/usecase/reassign_tasks"
 )
@@ -80,6 +81,7 @@ func run(ctx context.Context, log contract.Log) (err error) {
 	// Usecases
 	createTaskUsecase := create_task.New(tasksRepo, usersRepo, taskCreatedProducer, taskAssignedProducer)
 	reassignTasksUsecase := reassign_tasks.New(tasksRepo, usersRepo, taskAssignedProducer)
+	completeTaskUsecase := complete_task.New(tasksRepo)
 
 	// Middleware
 	authMiddleware := middleware.NewAuthMiddleware(env.JWT, usersRepo)
@@ -92,7 +94,7 @@ func run(ctx context.Context, log contract.Log) (err error) {
 
 	swagger.Servers = nil
 
-	server := api.NewServer(createTaskUsecase, reassignTasksUsecase)
+	server := api.NewServer(createTaskUsecase, reassignTasksUsecase, completeTaskUsecase)
 
 	r := mux.NewRouter()
 

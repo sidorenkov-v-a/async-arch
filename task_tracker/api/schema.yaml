@@ -45,7 +45,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Ok'
+        default:
+          description: error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
+  /tasks/{taskID}/complete/:
+    parameters:
+      - $ref: "#/components/parameters/taskID"
+    post:
+      description: Complete task
+      operationId: completeTask
+      requestBody:
+        description: Empty data
+        required: false
+        content:
+          application/json: {}
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+        default:
+          description: error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 components:
   schemas:
@@ -94,6 +124,12 @@ components:
           type: string
           format: date-time
 
+    taskID:
+      type: string
+      description: ID задачи в формате UUID
+      format: uuid
+      example: 5b0a63f5-2da9-438b-86c6-aa0c0303f59a
+
     Error:
       type: object
       required:
@@ -112,3 +148,10 @@ components:
       properties:
         status:
           type: string
+  parameters:
+    taskID:
+      name: taskID
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/taskID'

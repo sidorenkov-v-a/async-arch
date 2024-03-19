@@ -18,15 +18,18 @@ import (
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/7RUTW/bMAz9Kwa3o1dn2823ffTQU4Ett2EYOJtxlcSSRtItgiL/fZBkp07sbAvW5hJF",
-	"fHp8fE/RI1Su9c6SVYHyEaS6oxbj8prZcVh4dp5YDcXtytUUvnXnCUowVqkhhn0OLYlgMy6KsrEN7Pc5",
-	"MP3qDFMN5bdE8YT/ng9493NNlQau2820syhqJ3+n73FztEuUGWIUMY0luvkcfq0ct6hQQteZGvLTZjlU",
-	"TKhUf9AjdI1Kb9S0NHdkbRgT+9Q2Ju9Yif+x+1kXclCjW5qtdL6+TPKJpb3+oUU+tuxogoO+sU3j/udS",
-	"+RTR/51NTVKx8Wqcvciik3mHMcd0R0NPxwgUxq5cID9SAYqyyZSx2hBnQnxvKjpYWcLXB2wa4izAfvQw",
-	"yOGeWNL5t1eLq0UQ7zxZ9AZKeB+3cvCod9GmIpyWIvrnRKcikr+ZpYfYCCIbY6je1If6MpWCFST60dW7",
-	"9Je3SjaSovdbU8VjxVqSyenNCKvXTCso4VXx9KgU/YtSjEKOXh3LC9WsRkUYB6HcUUxGvLOSLsS7xeJZ",
-	"Nc2pcZt0l1bYbfXZuqUHdaYdDYV9PgTJlC7bHxL90kMy3G5jpjIJdYAs++pFuU51Xrdedymll0zl9mwm",
-	"8fM7AAD//0VSTCqzBgAA",
+	"H4sIAAAAAAAC/+xWy24TSxD9lVHdu2zHc+ObKJkdkCyyigTJKopQZabsdOzpbrrLCVE0EkJI/E6EQLBA",
+	"fMP4j9B0z/g5JgkEiQU7u6vqnFN1usu+gVTnRitS7CC5AYMWc2Ky/hujGx7sVZ+kggQM8jkIUJgTJE1Q",
+	"gKVXY2kpg4TtmAS49JxyrKr+tdSHBP7pzki6Ieq6dXlRFE2Fp9y3VluvxGpDliX541Rn5BVdm4pbKqYB",
+	"WSgE5OQcDuaDjq1UA6iAZ9JOAsQs/1Q0+frsglKusA6Hq8yOkcfubvg6rw32CF0LMDonB4ooDLivbY4M",
+	"CYzHMgOxTCYgtYRM2RNeyM6QqcMyp7aSC2kxoK+OzZLRlsnek33tFASw5BG1RsYme5jkpZHW+hsKMT+y",
+	"hQ6m+ubHNM+/zpVnPvuXvcnIpVYallo9aERL/TZtzsMtNN3WxuyNLqiAg72o/Fzelh/L28n78ktUfogm",
+	"78pvkzfl1/J28rb8FB0f+9HRa8xNJQ+2zmLc7vW3OpsZ7nb+7+2cdXa20+0OYpzGvbjX39pFEHeNo+pK",
+	"qr5elVRJjdhiOiQbObKXMqWpuwm8uMLBgGxUpb2s00DAJVkX6v/biDfiqmdtSKGRkEDPHwm/mrxzfq+4",
+	"rrdUO14VESyPFF15IvBoFqvoQTaNH4VQ5Q45fqqz67CFFJPyoGjMSKa+rHvhgu/3W3xz987PalFeFY0y",
+	"ZFxZrP6yOKOVC3d0M44fVVObGj0M17uP4xE/GlvY8S101AQK0RhpKdz/Hzj6vE6JcDTynroVU5uUozr6",
+	"IF9Xde7nhq+DS7/TlcM/1JObsHMKjzMipu7yX4eTdrJZyvTn/1Sse6c19ppXWkd/5p3+9TP4WRTfAwAA",
+	"///gRNiu/gkAAA==",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

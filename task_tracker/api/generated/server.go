@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/oapi-codegen/runtime"
 )
 
 // ServerInterface represents all server handlers.
@@ -18,6 +19,9 @@ type ServerInterface interface {
 
 	// (POST /tasks/reassign/)
 	ReassignTasks(w http.ResponseWriter, r *http.Request)
+
+	// (POST /tasks/{taskID}/complete/)
+	CompleteTask(w http.ResponseWriter, r *http.Request, taskID TaskID)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -50,6 +54,32 @@ func (siw *ServerInterfaceWrapper) ReassignTasks(w http.ResponseWriter, r *http.
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ReassignTasks(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// CompleteTask operation middleware
+func (siw *ServerInterfaceWrapper) CompleteTask(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "taskID" -------------
+	var taskID TaskID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "taskID", mux.Vars(r)["taskID"], &taskID, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "taskID", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CompleteTask(w, r, taskID)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -175,6 +205,8 @@ func HandlerWithOptions(si ServerInterface, options GorillaServerOptions) http.H
 	r.HandleFunc(options.BaseURL+"/tasks/", wrapper.CreateTask).Methods("POST")
 
 	r.HandleFunc(options.BaseURL+"/tasks/reassign/", wrapper.ReassignTasks).Methods("POST")
+
+	r.HandleFunc(options.BaseURL+"/tasks/{taskID}/complete/", wrapper.CompleteTask).Methods("POST")
 
 	return r
 }

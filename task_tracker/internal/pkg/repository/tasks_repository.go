@@ -2,8 +2,11 @@ package repository
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 
 	"async-arch/task_tracker/internal/pkg/domain"
@@ -63,4 +66,25 @@ func (r *tasksRepo) AllTasks(ctx context.Context) ([]*domain.Task, error) {
 	}
 
 	return tasks, nil
+}
+
+func (r *tasksRepo) GetByTaskIDAndAssigneeID(
+	ctx context.Context,
+	taskID uuid.UUID,
+	assigneeID uuid.UUID,
+) (*domain.Task, error) {
+	query := `SELECT * FROM tasks WHERE id = ? and tasks.assignee_id = ?;`
+
+	task := domain.Task{}
+
+	if err := trmsqlx.DefaultCtxGetter.DefaultTrOrDB(ctx, r.db).
+		GetContext(ctx, &task, r.db.Rebind(query), taskID, assigneeID); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, domain.ErrTaskNotFound
+		}
+
+		return nil, err
+	}
+
+	return &task, nil
 }

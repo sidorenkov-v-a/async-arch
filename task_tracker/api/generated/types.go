@@ -38,11 +38,20 @@ type TaskCreate struct {
 	Title       string             `json:"title"`
 }
 
+// TaskID ID задачи в формате UUID
+type TaskID = openapi_types.UUID
+
 // ReassignTasksJSONBody defines parameters for ReassignTasks.
 type ReassignTasksJSONBody interface{}
+
+// CompleteTaskJSONBody defines parameters for CompleteTask.
+type CompleteTaskJSONBody interface{}
 
 // CreateTaskJSONRequestBody defines body for CreateTask for application/json ContentType.
 type CreateTaskJSONRequestBody = TaskCreate
 
 // ReassignTasksJSONRequestBody defines body for ReassignTasks for application/json ContentType.
 type ReassignTasksJSONRequestBody ReassignTasksJSONBody
+
+// CompleteTaskJSONRequestBody defines body for CompleteTask for application/json ContentType.
+type CompleteTaskJSONRequestBody CompleteTaskJSONBody

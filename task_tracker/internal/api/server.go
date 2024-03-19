@@ -8,6 +8,7 @@ import (
 
 	api_client "async-arch/task_tracker/api/generated"
 	"async-arch/task_tracker/internal/pkg/domain"
+	"async-arch/task_tracker/internal/pkg/usecase/complete_task"
 	"async-arch/task_tracker/internal/pkg/usecase/create_task"
 	"async-arch/task_tracker/internal/pkg/usecase/reassign_tasks"
 )
@@ -15,10 +16,19 @@ import (
 type server struct {
 	createTaskUsecase    create_task.Usecase
 	reassignTasksUsecase reassign_tasks.Usecase
+	completeTaskUsecase  complete_task.Usecase
 }
 
-func NewServer(createTaskUsecase create_task.Usecase, reassignTasksUsecase reassign_tasks.Usecase) *server {
-	return &server{createTaskUsecase: createTaskUsecase, reassignTasksUsecase: reassignTasksUsecase}
+func NewServer(
+	createTaskUsecase create_task.Usecase,
+	reassignTasksUsecase reassign_tasks.Usecase,
+	completeTaskUsecase complete_task.Usecase,
+) *server {
+	return &server{
+		createTaskUsecase:    createTaskUsecase,
+		reassignTasksUsecase: reassignTasksUsecase,
+		completeTaskUsecase:  completeTaskUsecase,
+	}
 }
 
 func badRequest(w http.ResponseWriter, err error) {
@@ -41,6 +51,20 @@ func internalError(w http.ResponseWriter, err error) {
 	_ = json.NewEncoder(w).Encode(out)
 }
 
+func ok(w http.ResponseWriter) {
+	out := api_client.Ok{
+		Status: "Ok",
+	}
+
+	err := json.NewEncoder(w).Encode(out)
+	if err != nil {
+		internalError(w, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
 func (s *server) CreateTask(w http.ResponseWriter, r *http.Request) {
 	in := api_client.TaskCreate{}
 
@@ -61,7 +85,7 @@ func (s *server) CreateTask(w http.ResponseWriter, r *http.Request) {
 		AssigneeID:  in.AssigneeID,
 		Title:       in.Title,
 		Description: in.Description,
-		Status:      domain.TaskStatusNew,
+		Status:      domain.TaskStatusAssigned,
 	})
 	if err != nil {
 		badRequest(w, err)
@@ -94,15 +118,21 @@ func (s *server) ReassignTasks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	out := api_client.Ok{
-		Status: "Ok",
-	}
+	ok(w)
+}
 
-	err = json.NewEncoder(w).Encode(out)
+func (s *server) CompleteTask(w http.ResponseWriter, r *http.Request, taskID api_client.TaskID) {
+	userID, err := uuid.Parse(r.Header.Get("userID"))
 	if err != nil {
-		internalError(w, err)
+		badRequest(w, err)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	err = s.completeTaskUsecase.Run(r.Context(), userID, taskID)
+	if err != nil {
+		badRequest(w, err)
+		return
+	}
+
+	ok(w)
 }

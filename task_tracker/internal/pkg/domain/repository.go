@@ -17,4 +17,5 @@ type UserRepository interface {
 type TasksRepository interface {
 	Upsert(ctx context.Context, tasks ...*Task) ([]*Task, error)
 	AllTasks(ctx context.Context) ([]*Task, error)
+	GetByTaskIDAndAssigneeID(ctx context.Context, taskID uuid.UUID, assigneeID uuid.UUID) (*Task, error)
 }

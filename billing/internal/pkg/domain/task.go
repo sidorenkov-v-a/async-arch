@@ -21,6 +21,6 @@ type Task struct {
 type TaskStatus string
 
 const (
-	TaskStatusNew      TaskStatus = "new"
-	TaskStatusAssigned TaskStatus = "assigned"
+	TaskStatusAssigned  TaskStatus = "assigned"
+	TaskStatusCompleted TaskStatus = "completed"
 )

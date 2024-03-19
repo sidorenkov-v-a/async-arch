@@ -59,7 +59,7 @@ func (u *usecase) Run(ctx context.Context, in In) (*domain.Task, error) {
 		JiraID:      in.JiraID,
 		Title:       in.Title,
 		Description: in.Description,
-		Status:      "new",
+		Status:      domain.TaskStatusAssigned,
 	})
 
 	task := tasks[0]
