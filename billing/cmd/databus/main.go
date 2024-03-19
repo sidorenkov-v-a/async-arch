@@ -5,8 +5,12 @@ import (
 	"os"
 	"os/signal"
 
+	"golang.org/x/sync/errgroup"
+
+	"async-arch/billing/internal/databus/auth/user_created"
 	"async-arch/billing/internal/infrastructure/contract"
 	"async-arch/billing/internal/infrastructure/di"
+	"async-arch/billing/internal/pkg/repository"
 )
 
 const (
@@ -45,6 +49,37 @@ func main() {
 
 func run(ctx context.Context, log contract.Log) (err error) {
 	// Dependencies
+
+	env, err := di.NewEnv()
+	if err != nil {
+		return err
+	}
+
+	databus := di.NewDatabus(env.Databus, log)
+
+	// Database
+	db, err := di.NewDB(env.DB)
+	if err != nil {
+		return err
+	}
+
+	// Repositories
+	usersRepo := repository.NewUsersRepository(db)
+
+	// Handlers
+	userCreatedHandler := user_created.New(usersRepo)
+
+	userCreatedConsumer := di.NewConsumer(databus, "auth.user_created", "billing", userCreatedHandler.Handle)
+
+	g, gCtx := errgroup.WithContext(ctx)
+
+	g.Go(func() error {
+		return userCreatedConsumer.Consume(gCtx)
+	})
+
+	if err = g.Wait(); err != nil {
+		return err
+	}
 
 	return nil
 }
