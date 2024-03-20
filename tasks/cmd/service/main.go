@@ -12,6 +12,7 @@ import (
 	"async-arch/tasks/internal/api"
 	"async-arch/tasks/internal/api/middleware"
 	"async-arch/tasks/internal/databus/producer/task_assigned"
+	"async-arch/tasks/internal/databus/producer/task_completed"
 	"async-arch/tasks/internal/databus/producer/task_created"
 	"async-arch/tasks/internal/infrastructure/contract"
 	"async-arch/tasks/internal/infrastructure/di"
@@ -77,11 +78,12 @@ func run(ctx context.Context, log contract.Log) (err error) {
 	//Producers
 	taskCreatedProducer := task_created.New(databus)
 	taskAssignedProducer := task_assigned.New(databus)
+	taskCompletedProducer := task_completed.New(databus)
 
 	// Usecases
 	createTaskUsecase := create_task.New(tasksRepo, usersRepo, taskCreatedProducer, taskAssignedProducer)
 	reassignTasksUsecase := reassign_tasks.New(tasksRepo, usersRepo, taskAssignedProducer)
-	completeTaskUsecase := complete_task.New(tasksRepo)
+	completeTaskUsecase := complete_task.New(tasksRepo, taskCompletedProducer)
 
 	// Middleware
 	authMiddleware := middleware.NewAuthMiddleware(env.JWT, usersRepo)
