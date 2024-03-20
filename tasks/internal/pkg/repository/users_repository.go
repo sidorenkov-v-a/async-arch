@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 
-	"async-arch/task_tracker/internal/pkg/domain"
+	"async-arch/tasks/internal/pkg/domain"
 )
 
 type usersRepo struct {

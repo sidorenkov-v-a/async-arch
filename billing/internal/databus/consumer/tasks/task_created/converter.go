@@ -5,12 +5,12 @@ import (
 
 	"github.com/segmentio/kafka-go"
 
-	"async-arch/billing/internal/databus/consumer/task_tracker"
+	"async-arch/billing/internal/databus/consumer/tasks"
 	"async-arch/billing/internal/pkg/domain"
 )
 
 func messageToTask(message kafka.Message) (*domain.Task, error) {
-	msg := task_tracker.TaskCreatedMessage{}
+	msg := tasks.TaskCreatedMessage{}
 
 	err := json.Unmarshal(message.Value, &msg)
 	if err != nil {

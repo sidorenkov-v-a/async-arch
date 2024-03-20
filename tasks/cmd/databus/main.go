@@ -7,10 +7,10 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
-	"async-arch/task_tracker/internal/databus/consumer/auth/user_created"
-	"async-arch/task_tracker/internal/infrastructure/contract"
-	"async-arch/task_tracker/internal/infrastructure/di"
-	"async-arch/task_tracker/internal/pkg/repository"
+	"async-arch/tasks/internal/databus/consumer/auth/user_created"
+	"async-arch/tasks/internal/infrastructure/contract"
+	"async-arch/tasks/internal/infrastructure/di"
+	"async-arch/tasks/internal/pkg/repository"
 )
 
 const (

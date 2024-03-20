@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"async-arch/task_tracker/internal/pkg/domain"
+	"async-arch/tasks/internal/pkg/domain"
 )
 
 type TaskAssignedMessage struct {

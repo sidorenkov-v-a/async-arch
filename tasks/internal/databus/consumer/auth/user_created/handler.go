@@ -5,7 +5,7 @@ import (
 
 	"github.com/segmentio/kafka-go"
 
-	"async-arch/task_tracker/internal/pkg/domain"
+	"async-arch/tasks/internal/pkg/domain"
 )
 
 type handler struct {

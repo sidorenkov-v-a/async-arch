@@ -1,4 +1,4 @@
-module async-arch/task_tracker
+module async-arch/tasks
 
 go 1.21.1
 

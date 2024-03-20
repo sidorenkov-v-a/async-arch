@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 
-	"async-arch/task_tracker/internal/infrastructure/di"
-	"async-arch/task_tracker/internal/pkg/domain"
-	"async-arch/task_tracker/pkg/databus"
+	"async-arch/tasks/internal/infrastructure/di"
+	"async-arch/tasks/internal/pkg/domain"
+	"async-arch/tasks/pkg/databus"
 )
 
 type producer struct {

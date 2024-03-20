@@ -5,8 +5,8 @@ import (
 
 	"github.com/segmentio/kafka-go"
 
-	"async-arch/task_tracker/internal/databus/consumer"
-	"async-arch/task_tracker/internal/pkg/domain"
+	"async-arch/tasks/internal/databus/consumer"
+	"async-arch/tasks/internal/pkg/domain"
 )
 
 func messageToUser(message kafka.Message) (*domain.User, error) {

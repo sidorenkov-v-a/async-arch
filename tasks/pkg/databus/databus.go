@@ -3,8 +3,8 @@ package databus
 import (
 	"fmt"
 
-	"async-arch/task_tracker/internal/infrastructure/contract"
-	"async-arch/task_tracker/pkg/env"
+	"async-arch/tasks/internal/infrastructure/contract"
+	"async-arch/tasks/pkg/env"
 )
 
 type Databus struct {

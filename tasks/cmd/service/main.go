@@ -8,17 +8,17 @@ import (
 	"github.com/gorilla/mux"
 	oapiMiddleware "github.com/oapi-codegen/nethttp-middleware"
 
-	api_client "async-arch/task_tracker/api/generated"
-	"async-arch/task_tracker/internal/api"
-	"async-arch/task_tracker/internal/api/middleware"
-	"async-arch/task_tracker/internal/databus/producer/task_assigned"
-	"async-arch/task_tracker/internal/databus/producer/task_created"
-	"async-arch/task_tracker/internal/infrastructure/contract"
-	"async-arch/task_tracker/internal/infrastructure/di"
-	"async-arch/task_tracker/internal/pkg/repository"
-	"async-arch/task_tracker/internal/pkg/usecase/complete_task"
-	"async-arch/task_tracker/internal/pkg/usecase/create_task"
-	"async-arch/task_tracker/internal/pkg/usecase/reassign_tasks"
+	api_client "async-arch/tasks/api/generated"
+	"async-arch/tasks/internal/api"
+	"async-arch/tasks/internal/api/middleware"
+	"async-arch/tasks/internal/databus/producer/task_assigned"
+	"async-arch/tasks/internal/databus/producer/task_created"
+	"async-arch/tasks/internal/infrastructure/contract"
+	"async-arch/tasks/internal/infrastructure/di"
+	"async-arch/tasks/internal/pkg/repository"
+	"async-arch/tasks/internal/pkg/usecase/complete_task"
+	"async-arch/tasks/internal/pkg/usecase/create_task"
+	"async-arch/tasks/internal/pkg/usecase/reassign_tasks"
 )
 
 const (

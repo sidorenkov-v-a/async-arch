@@ -1,8 +1,8 @@
 package task_assigned
 
 import (
-	contract "async-arch/task_tracker/internal/databus/producer"
-	"async-arch/task_tracker/internal/pkg/domain"
+	contract "async-arch/tasks/internal/databus/producer"
+	"async-arch/tasks/internal/pkg/domain"
 )
 
 func taskToMsg(task *domain.Task) contract.TaskAssignedMessage {

@@ -1,9 +1,9 @@
 package di
 
 import (
-	"async-arch/task_tracker/internal/infrastructure/contract"
-	databusClient "async-arch/task_tracker/pkg/databus"
-	"async-arch/task_tracker/pkg/env"
+	"async-arch/tasks/internal/infrastructure/contract"
+	databusClient "async-arch/tasks/pkg/databus"
+	"async-arch/tasks/pkg/env"
 )
 
 func NewDatabus(env env.Databus, log contract.Log) *databusClient.Databus {

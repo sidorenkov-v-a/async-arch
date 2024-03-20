@@ -1,8 +1,8 @@
 package di
 
 import (
-	"async-arch/task_tracker/pkg/api_server"
-	"async-arch/task_tracker/pkg/env"
+	"async-arch/tasks/pkg/api_server"
+	"async-arch/tasks/pkg/env"
 )
 
 func NewAPIServer(config *env.Server) *api_server.Server {

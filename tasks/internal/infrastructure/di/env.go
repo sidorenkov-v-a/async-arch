@@ -6,7 +6,7 @@ import (
 
 	"github.com/ilyakaznacheev/cleanenv"
 
-	"async-arch/task_tracker/pkg/env"
+	"async-arch/tasks/pkg/env"
 )
 
 func NewEnv() (*env.Config, error) {

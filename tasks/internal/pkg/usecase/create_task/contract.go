@@ -3,7 +3,7 @@ package create_task
 import (
 	"context"
 
-	"async-arch/task_tracker/internal/pkg/domain"
+	"async-arch/tasks/internal/pkg/domain"
 )
 
 type Usecase interface {

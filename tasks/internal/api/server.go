@@ -6,11 +6,11 @@ import (
 
 	"github.com/google/uuid"
 
-	api_client "async-arch/task_tracker/api/generated"
-	"async-arch/task_tracker/internal/pkg/domain"
-	"async-arch/task_tracker/internal/pkg/usecase/complete_task"
-	"async-arch/task_tracker/internal/pkg/usecase/create_task"
-	"async-arch/task_tracker/internal/pkg/usecase/reassign_tasks"
+	api_client "async-arch/tasks/api/generated"
+	"async-arch/tasks/internal/pkg/domain"
+	"async-arch/tasks/internal/pkg/usecase/complete_task"
+	"async-arch/tasks/internal/pkg/usecase/create_task"
+	"async-arch/tasks/internal/pkg/usecase/reassign_tasks"
 )
 
 type server struct {

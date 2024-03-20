@@ -5,7 +5,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"async-arch/task_tracker/internal/infrastructure/contract"
+	"async-arch/tasks/internal/infrastructure/contract"
 )
 
 func NewLogger() contract.Log {

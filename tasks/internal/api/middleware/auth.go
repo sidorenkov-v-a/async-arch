@@ -7,8 +7,8 @@ import (
 
 	"github.com/golang-jwt/jwt"
 
-	"async-arch/task_tracker/internal/pkg/domain"
-	"async-arch/task_tracker/pkg/env"
+	"async-arch/tasks/internal/pkg/domain"
+	"async-arch/tasks/pkg/env"
 )
 
 type authMiddleware struct {

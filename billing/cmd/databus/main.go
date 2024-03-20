@@ -8,7 +8,7 @@ import (
 	"golang.org/x/sync/errgroup"
 
 	"async-arch/billing/internal/databus/consumer/auth/user_created"
-	"async-arch/billing/internal/databus/consumer/task_tracker/task_created"
+	"async-arch/billing/internal/databus/consumer/tasks/task_created"
 	"async-arch/billing/internal/infrastructure/contract"
 	"async-arch/billing/internal/infrastructure/di"
 	"async-arch/billing/internal/pkg/repository"
@@ -80,7 +80,7 @@ func run(ctx context.Context, log contract.Log) (err error) {
 	)
 	taskCreatedConsumer := di.NewConsumer(
 		databus,
-		"task_tracker.task_created",
+		"tasks.task_created",
 		"billing",
 		taskUpsertedHandler.Handle,
 	)
