@@ -18,15 +18,18 @@ func NewTasksRepository(db *sqlx.DB) *tasksRepo {
 }
 
 func (r *tasksRepo) Upsert(ctx context.Context, tasks ...*domain.Task) ([]*domain.Task, error) {
-	query := `INSERT INTO tasks(id, reporter_id, assignee_id, title, description, status, updated_at)
-VALUES (:id, :reporter_id, :assignee_id, :title, :description, :status, now())
+	query := `INSERT INTO tasks(id, reporter_id, assignee_id, jira_id, title, description, status, cost, created_at, updated_at)
+VALUES (:id, :reporter_id, :assignee_id, :jira_id, :title, :description, :status, :cost, :created_at, :updated_at)
 ON CONFLICT (id)
-    DO UPDATE SET reporter_id      = excluded.reporter_id,
-                  assignee_id       = excluded.assignee_id,
-                  title = excluded.title,
-                  description  = excluded.description,
-                  status = excluded.status,
-                  updated_at = excluded.updated_at
+    DO UPDATE SET reporter_id = excluded.reporter_id,
+                  assignee_id = excluded.assignee_id,
+                  jira_id     = excluded.jira_id,
+                  title       = excluded.title,
+                  description = excluded.description,
+                  status      = excluded.status,
+                  cost        = excluded.cost,
+                  created_at  = excluded.created_at,
+                  updated_at  = excluded.updated_at
 where tasks.updated_at < excluded.updated_at
 
 RETURNING *;`

@@ -14,6 +14,7 @@ type Task struct {
 	Title       string     `db:"title"`
 	Description string     `db:"description"`
 	Status      TaskStatus `db:"status"`
+	Cost        int64      `db:"cost"`
 	CreatedAt   time.Time  `db:"created_at"`
 	UpdatedAt   time.Time  `db:"updated_at"`
 }

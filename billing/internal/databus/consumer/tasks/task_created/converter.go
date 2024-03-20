@@ -25,6 +25,7 @@ func messageToTask(message kafka.Message) (*domain.Task, error) {
 		Title:       msg.Title,
 		Description: msg.Description,
 		Status:      msg.Status,
+		Cost:        0,
 		CreatedAt:   msg.CreatedAt,
 		UpdatedAt:   msg.UpdatedAt,
 	}, nil
