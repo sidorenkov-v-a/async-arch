@@ -13,6 +13,11 @@ type TaskAssignedMessage struct {
 	AssigneeID uuid.UUID `json:"assignee_id"`
 }
 
+type TaskCompletedMessage struct {
+	ID         uuid.UUID `json:"id"`
+	AssigneeID uuid.UUID `json:"assignee_id"`
+}
+
 type TaskCreatedMessage struct {
 	ID          uuid.UUID         `json:"id"`
 	ReporterID  uuid.UUID         `json:"reporter_id"`
