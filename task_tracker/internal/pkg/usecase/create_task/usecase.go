@@ -6,8 +6,8 @@ import (
 
 	"github.com/google/uuid"
 
+	"async-arch/task_tracker/internal/databus/producer"
 	"async-arch/task_tracker/internal/pkg/domain"
-	"async-arch/task_tracker/internal/pkg/producer"
 )
 
 var (

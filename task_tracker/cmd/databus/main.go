@@ -7,7 +7,7 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
-	"async-arch/task_tracker/internal/databus/auth/user_created"
+	"async-arch/task_tracker/internal/databus/consumer/auth/user_created"
 	"async-arch/task_tracker/internal/infrastructure/contract"
 	"async-arch/task_tracker/internal/infrastructure/di"
 	"async-arch/task_tracker/internal/pkg/repository"

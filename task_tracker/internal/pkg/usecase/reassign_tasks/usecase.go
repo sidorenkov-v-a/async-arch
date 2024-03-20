@@ -4,8 +4,8 @@ import (
 	"context"
 	"math/rand"
 
+	"async-arch/task_tracker/internal/databus/producer"
 	"async-arch/task_tracker/internal/pkg/domain"
-	"async-arch/task_tracker/internal/pkg/producer"
 )
 
 type usecase struct {
