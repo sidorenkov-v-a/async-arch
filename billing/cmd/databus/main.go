@@ -7,7 +7,8 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
-	"async-arch/billing/internal/databus/auth/user_created"
+	"async-arch/billing/internal/databus/consumer/auth/user_created"
+	"async-arch/billing/internal/databus/consumer/task_tracker/task_created"
 	"async-arch/billing/internal/infrastructure/contract"
 	"async-arch/billing/internal/infrastructure/di"
 	"async-arch/billing/internal/pkg/repository"
@@ -65,16 +66,33 @@ func run(ctx context.Context, log contract.Log) (err error) {
 
 	// Repositories
 	usersRepo := repository.NewUsersRepository(db)
+	tasksRepo := repository.NewTasksRepository(db)
 
 	// Handlers
 	userCreatedHandler := user_created.New(usersRepo)
+	taskUpsertedHandler := task_created.New(tasksRepo)
 
-	userCreatedConsumer := di.NewConsumer(databus, "auth.user_created", "billing", userCreatedHandler.Handle)
+	userCreatedConsumer := di.NewConsumer(
+		databus,
+		"auth.user_created",
+		"billing",
+		userCreatedHandler.Handle,
+	)
+	taskCreatedConsumer := di.NewConsumer(
+		databus,
+		"task_tracker.task_created",
+		"billing",
+		taskUpsertedHandler.Handle,
+	)
 
 	g, gCtx := errgroup.WithContext(ctx)
 
 	g.Go(func() error {
 		return userCreatedConsumer.Consume(gCtx)
+	})
+
+	g.Go(func() error {
+		return taskCreatedConsumer.Consume(gCtx)
 	})
 
 	if err = g.Wait(); err != nil {

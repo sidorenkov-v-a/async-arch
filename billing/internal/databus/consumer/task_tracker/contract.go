@@ -1,7 +1,6 @@
-package producer
+package task_tracker
 
 import (
-	"context"
 	"time"
 
 	"github.com/google/uuid"
@@ -24,12 +23,4 @@ type TaskCreatedMessage struct {
 	Status      domain.TaskStatus `json:"status"`
 	CreatedAt   time.Time         `json:"created_at"`
 	UpdatedAt   time.Time         `json:"updated_at"`
-}
-
-type TaskAssignedProducer interface {
-	Produce(ctx context.Context, tasks ...*domain.Task) error
-}
-
-type TaskCreatedProducer interface {
-	Produce(ctx context.Context, tasks ...*domain.Task) error
 }

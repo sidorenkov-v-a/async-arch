@@ -14,4 +14,5 @@ type User struct {
 	LastName  string    `db:"last_name"`
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`
+	Balance   int64     `db:"balance"`
 }

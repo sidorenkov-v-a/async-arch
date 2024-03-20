@@ -75,8 +75,8 @@ func run(ctx context.Context, log contract.Log) (err error) {
 	tasksRepo := repository.NewTasksRepository(db)
 
 	//Producers
-	taskCreatedProducer := task_created.NewProducer(databus)
-	taskAssignedProducer := task_assigned.NewProducer(databus)
+	taskCreatedProducer := task_created.New(databus)
+	taskAssignedProducer := task_assigned.New(databus)
 
 	// Usecases
 	createTaskUsecase := create_task.New(tasksRepo, usersRepo, taskCreatedProducer, taskAssignedProducer)
